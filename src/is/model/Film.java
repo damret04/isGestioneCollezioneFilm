@@ -1,5 +1,7 @@
 package is.model;
 
+import java.util.Objects;
+
 public final class Film implements ContenutiMultimediali{
     private final String id;
     private final String titolo;
@@ -34,6 +36,10 @@ public final class Film implements ContenutiMultimediali{
     @Override
     public StatoVisione getStatoVisione() {return this.statoVisione;}
 
+    public static FilmBuilder builder() {
+        return new FilmBuilder();
+    }
+
     public static class FilmBuilder {
         private String id;
         private String titolo;
@@ -43,11 +49,20 @@ public final class Film implements ContenutiMultimediali{
         private int valutazione;
         private StatoVisione statoVisione;
 
-        //Costruttore per campi obbligatori
-        public FilmBuilder (String id, String titolo, String regista) {
+
+        public FilmBuilder id(String id){
             this.id = id;
+            return this;
+        }
+
+        public FilmBuilder titolo(String titolo) {
             this.titolo = titolo;
+            return this;
+        }
+
+        public FilmBuilder regista(String regista) {
             this.regista = regista;
+            return this;
         }
 
         //Costruttori per campi restanti
@@ -79,5 +94,25 @@ public final class Film implements ContenutiMultimediali{
         public Film build() {
             return new Film(this);
         }
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        if(obj == this) return true;
+        if(obj.getClass() != this.getClass()) return false;
+        Film film = (Film) obj;
+        return Objects.equals(this.id, film.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
+    }
+
+    @Override
+    public String toString() {
+        return "Film{" + "id=" + id + ", titolo=" + titolo + ", regista=" + regista + ", annoUscita=" + annoUscita + ", genere=" + genere + ", valutazione=" + valutazione + ", statoVisione=" + statoVisione + '}';
     }
 }

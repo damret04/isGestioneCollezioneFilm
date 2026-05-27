@@ -8,15 +8,16 @@ public enum Genere {
     FANTASCIENZA("Fantascienza"),
     FANTASY("Fantasy"),
     HORROR("Horror"),
+    SPLATTER("Splatter"),
     ROMANTICO("Romantico"),
     THRILLER("Thriller"),
     ANIMAZIONE("Animazione"),
     DOCUMENTARIO("Documentario"),
     ALTRO("Altro");
 
-    private String nome;
+    private final String nome;
 
-    private Genere(String nome) {
+    Genere(String nome) {
         this.nome = nome;
     }
 
