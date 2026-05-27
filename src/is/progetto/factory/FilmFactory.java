@@ -29,4 +29,9 @@ public class FilmFactory implements MediaFactory{
                 .valutazione(valutazione)
                 .build();
     }
+
+    //creazione di un film vuoto per il form di inserimento
+    public Film creaVuoto(){
+        return new Film.FilmBuilder().build();
+    }
 }
