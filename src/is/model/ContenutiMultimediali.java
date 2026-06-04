@@ -1,7 +1,7 @@
 package is.model;
 
 public interface ContenutiMultimediali {
-    String getId();
+    int getId();
     String getTitolo();
     String getRegista();
     int getAnnoUscita();

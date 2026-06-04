@@ -3,12 +3,15 @@ package is.model;
 import java.util.Objects;
 
 public final class Film implements ContenutiMultimediali{
-    private final String id;
+    public static final String TIPO_CONTENUTO = "FILM";
+
+    private final int id;
     private final String titolo;
     private final String regista;
     private final int annoUscita;
     private final Genere genere;
     private final int valutazione;
+    private final int durata; //durata in minuti
     private final StatoVisione statoVisione;
 
     //Costruttore privato per far modo che si possa creare solo tramite il Pattern Builder
@@ -19,10 +22,11 @@ public final class Film implements ContenutiMultimediali{
         this.annoUscita = builder.annoUscita;
         this.genere = builder.genere;
         this.valutazione = builder.valutazione;
+        this.durata = builder.durata;
         this.statoVisione = builder.statoVisione;
     }
     @Override
-    public String getId() {return this.id;}
+    public int getId() {return this.id;}
     @Override
     public String getTitolo() {return this.titolo;}
     @Override
@@ -41,16 +45,17 @@ public final class Film implements ContenutiMultimediali{
     }
 
     public static class FilmBuilder {
-        private String id;
+        private int id;
         private String titolo;
         private String regista;
         private int annoUscita;
         private Genere genere;
         private int valutazione;
+        private int durata;
         private StatoVisione statoVisione;
 
 
-        public FilmBuilder id(String id){
+        public FilmBuilder id(int id){
             this.id = id;
             return this;
         }
@@ -67,7 +72,7 @@ public final class Film implements ContenutiMultimediali{
 
         //Costruttori per campi restanti
         public FilmBuilder annoUscita(int annoUscita) {
-            if(annoUscita < 2026)
+            if(annoUscita > 2026)
                 throw new IllegalArgumentException("Anno di uscita non valido.");
             this.annoUscita = annoUscita;
             return this;
@@ -82,6 +87,13 @@ public final class Film implements ContenutiMultimediali{
             if(valutazione < 1 || valutazione > 5)
                 throw new IllegalArgumentException("Valutazione deve essere compresa tra 1 e 5.");
             this.valutazione = valutazione;
+            return this;
+        }
+
+        public FilmBuilder durata(int durata) {
+            if(durata <= 0)
+                throw new IllegalArgumentException("La durata deve essere maggiore di 0 min.");
+            this.durata = durata;
             return this;
         }
 
@@ -114,6 +126,8 @@ public final class Film implements ContenutiMultimediali{
 
     @Override
     public String toString() {
-        return "Film{" + "id=" + id + ", titolo=" + titolo + ", regista=" + regista + ", annoUscita=" + annoUscita + ", genere=" + genere + ", valutazione=" + valutazione + ", statoVisione=" + statoVisione + '}';
+        return "Film{" + "id=" + id + ", titolo=" + titolo + ", regista=" + regista + ", annoUscita=" + annoUscita +
+                ", genere=" + genere + ", valutazione=" + valutazione + ", durata=" + durata + " min" + ", statoVisione=" +
+                statoVisione.getDescrizione() + '}';
     }
 }
