@@ -14,7 +14,8 @@ public class InitDB {
                     anno_uscita INT,
                     genere VARCHAR(100),
                     valutazione INT CHECK(valutazione >= 1 AND valutazione <= 5),
-                    stato_visione VARCHAR(50)
+                    stato_visione VARCHAR(50),
+                    durata INT
                 );
             """
             );

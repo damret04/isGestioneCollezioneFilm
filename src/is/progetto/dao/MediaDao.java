@@ -21,4 +21,9 @@ public interface MediaDao {
     List<ContenutiMultimediali> filtraPerRegista(String regista);
     List<ContenutiMultimediali> filtraPerGenere(Genere genere);
     List<ContenutiMultimediali> filtraPerStatoVisione(StatoVisione statoVisione);
+
+    // metodi per l'ordinamento
+    List<ContenutiMultimediali> getTuttiOrdinatiPerTitolo();
+    List<ContenutiMultimediali> getTuttiOrdinatiPerAnno(boolean crescente);
+    List<ContenutiMultimediali> getTuttiOrdinatiPerValutazione(boolean crescente);
 }

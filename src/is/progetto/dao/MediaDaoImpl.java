@@ -162,6 +162,23 @@ public class MediaDaoImpl implements MediaDao {
         return eseguiRicercaFiltro("SELECT * FROM film WHERE stato_visione = ?", statoVisione.name());
     }
 
+    @Override
+    public List<ContenutiMultimediali> getTuttiOrdinatiPerTitolo() {
+        return eseguiRicercaOrdinata("SELECT * FROM film ORDER BY titolo ASC");
+    }
+
+    @Override
+    public List<ContenutiMultimediali> getTuttiOrdinatiPerAnno(boolean crescente) {
+        String ordine = crescente ? "ASC" : "DESC";
+        return eseguiRicercaOrdinata("SELECT * FROM film ORDER BY anno_uscita " + ordine);
+    }
+
+    @Override
+    public List<ContenutiMultimediali> getTuttiOrdinatiPerValutazione(boolean crescente) {
+        String ordine = crescente ? "ASC" : "DESC";
+        return eseguiRicercaOrdinata("SELECT * FROM film ORDER BY valutazione " + ordine);
+    }
+
     // METODI DI SUPPORTO
 
     private List<ContenutiMultimediali> eseguiRicercaFiltro(String sql, String parametro) {
@@ -180,6 +197,24 @@ public class MediaDaoImpl implements MediaDao {
             throw new RuntimeException("Errore durante la ricerca/filtro", e);
         }
         return risultati;
+    }
+
+    private List<ContenutiMultimediali> eseguiRicercaOrdinata(String sql) {
+        List<ContenutiMultimediali> lista = new ArrayList<>();
+        try (Connection conn = DBManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                ContenutiMultimediali media = estraiMediaDaResultSet(rs);
+                if (media != null) {
+                    lista.add(media);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante il recupero dei dati ordinati", e);
+        }
+        return lista;
     }
 
     private ContenutiMultimediali estraiMediaDaResultSet(ResultSet rs) throws SQLException {
