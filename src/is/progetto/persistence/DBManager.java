@@ -14,9 +14,9 @@ public class DBManager {
 
     private static DBManager instance;
 
-    private static final String url = "jdbc:h2:./db/films";
-    private static final String user = "sa";
-    private static final String password = "";
+    private static final String url = "jdbc:mysql://localhost:3306/collezione_film";
+    private static final String user = "damret04";
+    private static final String password = "DataBase01.";
 
     private static Connection conn;
 

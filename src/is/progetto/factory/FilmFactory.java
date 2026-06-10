@@ -20,7 +20,7 @@ public class FilmFactory implements MediaFactory{
 
 
     @Override
-    public ContenutiMultimediali crea(String id, String titolo, String regista, int annoUscita, int valutazione) {
+    public ContenutiMultimediali crea(int id, String titolo, String regista, int annoUscita, int valutazione) {
         return new Film.FilmBuilder()
                 .id(id)
                 .titolo(titolo)
@@ -31,7 +31,13 @@ public class FilmFactory implements MediaFactory{
     }
 
     //creazione di un film vuoto per il form di inserimento
+    @Override
     public Film creaVuoto(){
         return new Film.FilmBuilder().build();
+    }
+
+    @Override
+    public String getTipoContenuto() {
+        return Film.TIPO_CONTENUTO;
     }
 }

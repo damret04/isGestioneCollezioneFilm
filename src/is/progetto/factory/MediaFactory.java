@@ -8,6 +8,10 @@ import is.model.*;
 * Permette l'estensibilità(nuovi tipi di media)
  */
 public interface MediaFactory {
-    ContenutiMultimediali crea(String id, String titolo, String regista, int annoUscita, int valutazione);
+    ContenutiMultimediali crea(int id, String titolo, String regista, int annoUscita, int valutazione);
+
+    String getTipoContenuto();
+
+    ContenutiMultimediali creaVuoto();
 
 }

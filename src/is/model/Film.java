@@ -5,14 +5,14 @@ import java.util.Objects;
 public final class Film implements ContenutiMultimediali{
     public static final String TIPO_CONTENUTO = "FILM";
 
-    private final int id;
-    private final String titolo;
-    private final String regista;
-    private final int annoUscita;
-    private final Genere genere;
-    private final int valutazione;
-    private final int durata; //durata in minuti
-    private final StatoVisione statoVisione;
+    private int id;
+    private String titolo;
+    private String regista;
+    private int annoUscita;
+    private Genere genere;
+    private int valutazione;
+    private int durata; //durata in minuti
+    private StatoVisione statoVisione;
 
     //Costruttore privato per far modo che si possa creare solo tramite il Pattern Builder
     private Film(FilmBuilder builder) {
@@ -39,6 +39,26 @@ public final class Film implements ContenutiMultimediali{
     public int getValutazione() {return this.valutazione;}
     @Override
     public StatoVisione getStatoVisione() {return this.statoVisione;}
+
+    @Override
+    public String getTipoContenuto() {return TIPO_CONTENUTO;}
+
+    public int getDurata() {return this.durata;}
+
+    @Override
+    public void setTitolo(String titolo) {this.titolo = titolo;}
+    @Override
+    public void setRegista(String regista) {this.regista = regista;}
+    @Override
+    public void setAnnoUscita(int annoUscita) {this.annoUscita = annoUscita;}
+    @Override
+    public void setValutazione(int valutazione) {this.valutazione = valutazione;}
+    @Override
+    public void setGenere(Genere genere) {this.genere = genere;}
+    @Override
+    public void setStatoVisione(StatoVisione statoVisione) {this.statoVisione = statoVisione;}
+    public void setDurata(int durata) {this.durata = durata;}
+
 
     public static FilmBuilder builder() {
         return new FilmBuilder();

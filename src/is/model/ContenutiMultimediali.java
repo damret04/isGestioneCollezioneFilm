@@ -9,6 +9,15 @@ public interface ContenutiMultimediali {
     Genere getGenere();
     StatoVisione getStatoVisione();
 
+    String getTipoContenuto();
+
+    void setTitolo(String titolo);
+    void setRegista(String regista);
+    void setAnnoUscita(int annoUscita);
+    void setValutazione(int valutazione);
+    void setGenere(Genere genere);
+    void setStatoVisione(StatoVisione statoVisione);
+
 
     boolean equals(Object obj);
     int hashCode();

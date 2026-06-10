@@ -8,12 +8,12 @@ public class InitDB {
 
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS film (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INT PRIMARY KEY AUTO_INCREMENT,
                     titolo VARCHAR(255) NOT NULL,
                     regista VARCHAR(255) NOT NULL,
-                    anno_uscita INTEGER,
+                    anno_uscita INT,
                     genere VARCHAR(100),
-                    valutazione INTEGER CHECK(valutazione >= 1 AND valutazione <= 5),
+                    valutazione INT CHECK(valutazione >= 1 AND valutazione <= 5),
                     stato_visione VARCHAR(50)
                 );
             """
@@ -23,5 +23,8 @@ public class InitDB {
             System.err.println("Errore durante l'inizializzazione del database:");
             e.printStackTrace();
         }
+    }
+    public static void main(String[] args) {
+        init();
     }
 }
