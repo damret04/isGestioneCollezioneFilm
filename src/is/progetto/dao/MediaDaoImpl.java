@@ -1,9 +1,8 @@
 package is.progetto.dao;
 
 import is.progetto.persistence.DBManager;
-
 import is.model.*;
-import is.progetto.persistence.DBManager;
+
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -177,6 +176,20 @@ public class MediaDaoImpl implements MediaDao {
     public List<ContenutiMultimediali> getTuttiOrdinatiPerValutazione(boolean crescente) {
         String ordine = crescente ? "ASC" : "DESC";
         return eseguiRicercaOrdinata("SELECT * FROM film ORDER BY valutazione " + ordine);
+    }
+
+    @Override
+    public int getUltimoIdInserito() {
+        try (Connection conn = DBManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT MAX(id) FROM film")) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     // METODI DI SUPPORTO

@@ -16,6 +16,8 @@ public interface MediaDao {
 
     void elimina(int id);
 
+    int getUltimoIdInserito();
+
     // filtri per ricerca
     List<ContenutiMultimediali> filtraPerTitolo(String titolo);
     List<ContenutiMultimediali> filtraPerRegista(String regista);
