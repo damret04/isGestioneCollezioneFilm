@@ -35,6 +35,11 @@ public class MediaController {
         return commandManager.eseguiCommand(comando);
     }
 
+    public boolean aggiornaMedia(ContenutiMultimediali mediaVecchio, ContenutiMultimediali mediaNuovo) {
+        MediaCommand comando = new AggiornaMediaCommand(dao, mediaVecchio, mediaNuovo);
+        return commandManager.eseguiCommand(comando);
+    }
+
     public boolean annullaUltimaAzione() {
         MediaCommand comandoAnnullato = commandManager.annulla();
         // Restituisce true se l'annullamento è andato a buon fine
@@ -66,4 +71,16 @@ public class MediaController {
         return dao.filtraPerStatoVisione(statoVisione);
     }
 
+    public List<ContenutiMultimediali> getOrdinatiPerTitolo() {
+        return dao.getTuttiOrdinatiPerTitolo();
+    }
+
+    public List<ContenutiMultimediali> getOrdinatiPerAnno(boolean decrescente) {
+        // Passo 'false' se l'utente li vuole dal più recente al più vecchio (decrescente)
+        return dao.getTuttiOrdinatiPerAnno(!decrescente);
+    }
+
+    public List<ContenutiMultimediali> getOrdinatiPerValutazione(boolean decrescente) {
+        return dao.getTuttiOrdinatiPerValutazione(!decrescente);
+    }
 }

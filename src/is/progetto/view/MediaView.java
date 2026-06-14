@@ -1,9 +1,6 @@
 package is.progetto.view;
 
-import is.model.ContenutiMultimediali;
-import is.model.Film;
-import is.model.Genere;
-import is.model.StatoVisione;
+import is.model.*;
 import is.progetto.controller.MediaController;
 
 import javafx.beans.property.SimpleObjectProperty;
@@ -15,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 public class MediaView extends BorderPane {
 
@@ -29,6 +25,7 @@ public class MediaView extends BorderPane {
     // Pulsanti
     private Button btnAggiungi;
     private Button btnElimina;
+    private Button btnModifica;
     private Button btnAnnulla;
 
     public MediaView() {
@@ -56,9 +53,10 @@ public class MediaView extends BorderPane {
     }
 
     private HBox creaBarraSuperiore() {
-        HBox hbox = new HBox(10);
-        hbox.setPadding(new Insets(0, 0, 10, 0));
+        HBox hbox = new HBox(15); // Spaziatura tra gli elementi
+        hbox.setPadding(new Insets(0, 0, 15, 0));
 
+        // 1. CAMPO DI RICERCA TESTUALE (Titolo)
         TextField txtCerca = new TextField();
         txtCerca.setPromptText("Cerca per titolo...");
 
@@ -72,13 +70,56 @@ public class MediaView extends BorderPane {
             }
         });
 
+        // 2. FILTRO PER GENERE (ComboBox)
+        ComboBox<Genere> comboFiltroGenere = new ComboBox<>();
+        comboFiltroGenere.setPromptText("Filtra per Genere");
+        comboFiltroGenere.getItems().setAll(Genere.values());
+
+        // Evento: quando l'utente sceglie un genere, viene filtrata la tabella
+        comboFiltroGenere.setOnAction(e -> {
+            Genere selezionato = comboFiltroGenere.getValue();
+            if (selezionato != null) {
+                datiOsservabili.setAll(facade.filtraPerGenere(selezionato));
+            }
+        });
+
+        // 3. ORDINAMENTO (ComboBox)
+        ComboBox<String> comboOrdinamento = new ComboBox<>();
+        comboOrdinamento.setPromptText("Ordina per...");
+        comboOrdinamento.getItems().addAll("Titolo (A-Z)", "Anno (Più recenti)", "Valutazione (Migliori)");
+
+        // Evento: quando l'utente sceglie un ordinamento, vengono chiesti alla Facade i dati ordinati
+        comboOrdinamento.setOnAction(e -> {
+            String scelta = comboOrdinamento.getValue();
+            if (scelta == null) return;
+
+            switch (scelta) {
+                case "Titolo (A-Z)" -> datiOsservabili.setAll(facade.getOrdinatiPerTitolo());
+                case "Anno (Più recenti)" -> datiOsservabili.setAll(facade.getOrdinatiPerAnno(true));
+                case "Valutazione (Migliori)" -> datiOsservabili.setAll(facade.getOrdinatiPerValutazione(true));
+            }
+        });
+
+        // 4. TASTO RESET (Azzera tutti i filtri)
         Button btnReset = new Button("Mostra Tutti");
         btnReset.setOnAction(e -> {
             txtCerca.clear();
-            aggiornaDatiTabella();
+            comboFiltroGenere.setValue(null);
+            comboOrdinamento.setValue(null);
+            aggiornaDatiTabella(); // Ricarica la lista base
         });
 
-        hbox.getChildren().addAll(new Label("Ricerca:"), txtCerca, btnCerca, btnReset);
+        // Tutti i controlli sulla barra orizzontale
+        hbox.getChildren().addAll(
+                new Label("Ricerca:"), txtCerca, btnCerca,
+                new Label("Genere:"), comboFiltroGenere,
+                new Label("Ordina:"), comboOrdinamento,
+                btnReset
+        );
+
+        // Allineamento verticale al centro per i componenti della barra
+        hbox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
         return hbox;
     }
 
@@ -118,28 +159,39 @@ public class MediaView extends BorderPane {
         HBox hbox = new HBox(15);
         hbox.setPadding(new Insets(10, 0, 0, 0));
 
-        btnAggiungi = new Button("Aggiungi Nuovo Film");
-        btnElimina = new Button("Elimina Selezionato");
-        btnAnnulla = new Button("Annulla Ultima Azione (Undo)");
-        btnAnnulla.setDisable(true); // Disabilitato all'avvio perché non c'è nulla da annullare
+        btnAggiungi = new Button("Aggiungi");
+        btnModifica = new Button("Modifica");
+        btnElimina = new Button("Elimina");
+        btnAnnulla = new Button("Annulla Azione");
+        btnAnnulla.setDisable(true);
 
-        // GESTIONE EVENTI (Il cuore del Controller visivo)
-
+        // GESTIONE EVENTI
+        // 1. Azione AGGIUNGI
         btnAggiungi.setOnAction(e -> {
-            MediaInputDialog dialog = new MediaInputDialog();
-
-            // showAndWait() blocca l'esecuzione finché l'utente non chiude il popup
-            dialog.showAndWait().ifPresent(nuovoFilm -> {
-
-                // Se il dialog restituisce un film (utente ha cliccato "Salva"), lo passa alla Facade
-                if(facade.aggiungiNuovoMedia(nuovoFilm)) {
-                    aggiornaDatiTabella(); // Il film compare in tabella
-                } else {
-                    mostraAllerta("Errore", "Si è verificato un problema durante il salvataggio nel Database.");
+            MediaInputDialog dialog = new MediaInputDialog(null); // <-- Nuovo nome classe
+            dialog.showAndWait().ifPresent(nuovoMedia -> {
+                if(facade.aggiungiNuovoMedia(nuovoMedia)) {
+                    aggiornaDatiTabella();
                 }
             });
         });
 
+        // 2. Azione MODIFICA
+        btnModifica.setOnAction(e -> {
+            ContenutiMultimediali selezionato = table.getSelectionModel().getSelectedItem();
+            if (selezionato != null) {
+                MediaInputDialog dialog = new MediaInputDialog(selezionato); // <-- Nuovo nome classe
+                dialog.showAndWait().ifPresent(mediaModificato -> {
+                    if(facade.aggiornaMedia(selezionato, mediaModificato)) {
+                        aggiornaDatiTabella();
+                    }
+                });
+            } else {
+                mostraAllerta("Attenzione", "Seleziona un elemento dalla tabella.");
+            }
+        });
+
+        // 3. Azione ELIMINA
         btnElimina.setOnAction(e -> {
             ContenutiMultimediali selezionato = table.getSelectionModel().getSelectedItem();
             if (selezionato != null) {
@@ -151,13 +203,15 @@ public class MediaView extends BorderPane {
             }
         });
 
+        // 4. Azione ANNULLA (UNDO)
         btnAnnulla.setOnAction(e -> {
             if(facade.annullaUltimaAzione()) {
                 aggiornaDatiTabella();
             }
         });
 
-        hbox.getChildren().addAll(btnAggiungi, btnElimina, btnAnnulla);
+        // Aggiunge tutti e 4 i bottoni all'interfaccia
+        hbox.getChildren().addAll(btnAggiungi, btnModifica, btnElimina, btnAnnulla);
         return hbox;
     }
 
