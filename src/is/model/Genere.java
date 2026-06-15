@@ -13,6 +13,7 @@ public enum Genere {
     THRILLER("Thriller"),
     ANIMAZIONE("Animazione"),
     DOCUMENTARIO("Documentario"),
+    DRAMMATICO("Drammatico"),
     ALTRO("Altro");
 
     private final String nome;

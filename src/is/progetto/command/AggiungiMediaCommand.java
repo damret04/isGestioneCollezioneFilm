@@ -32,10 +32,11 @@ public class AggiungiMediaCommand implements MediaCommand {
 
     @Override
     public boolean annulla() {
-        if (!successo) {
+        if (successo && idGenerato != -1) {
             try {
                 dao.elimina(this.idGenerato);
                 successo = false;
+                idGenerato = -1;
                 return true;
             } catch (Exception e) {
                 return false;
