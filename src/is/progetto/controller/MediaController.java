@@ -25,6 +25,16 @@ public class MediaController {
 
     // METODI DI SCRITTURA (Passano per il Command Pattern per l'undo/redo)
     public boolean aggiungiNuovoMedia(ContenutiMultimediali media) {
+        // 1. Cerca nel database se esiste già qualcosa con questo titolo
+        List<ContenutiMultimediali> possibiliDuplicati = dao.filtraPerTitolo(media.getTitolo());
+
+        // 2. Controlla se tra i risultati c'è un film con lo STESSO regista
+        for (ContenutiMultimediali esistente : possibiliDuplicati) {
+            if (esistente.getRegista().equalsIgnoreCase(media.getRegista())) {
+                System.out.println("Salvataggio bloccato: Il film '" + media.getTitolo() + "' esiste già nel database!");
+                return false; // Blocca immediatamente l'esecuzione e restituisce falso
+            }
+        }
         // Incapsula la richiesta in un comando e lo passa al manager
         MediaCommand comando = new AggiungiMediaCommand(dao, media);
         return commandManager.eseguiCommand(comando);

@@ -232,7 +232,7 @@ public class MediaDaoImpl implements MediaDao {
         StatoVisione statoVisione = StatoVisione.valueOf(rs.getString("stato_visione"));
 
         // ESTENSIBILITÀ: Instanzia l'oggetto corretto in base alla colonna "tipo_contenuto"
-        if (Film.TIPO_CONTENUTO.equals(tipoContenuto)) {
+        if (tipoContenuto != null && tipoContenuto.equalsIgnoreCase("Film")) {
             int durata = rs.getInt("durata");
             return Film.builder()
                     .id(id)

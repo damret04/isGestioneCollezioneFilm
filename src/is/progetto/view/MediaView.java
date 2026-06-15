@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert.AlertType;
 
 public class MediaView extends BorderPane {
 
@@ -168,10 +169,21 @@ public class MediaView extends BorderPane {
         // GESTIONE EVENTI
         // 1. Azione AGGIUNGI
         btnAggiungi.setOnAction(e -> {
-            MediaInputDialog dialog = new MediaInputDialog(null); // <-- Nuovo nome classe
+            MediaInputDialog dialog = new MediaInputDialog(null);
             dialog.showAndWait().ifPresent(nuovoMedia -> {
-                if(facade.aggiungiNuovoMedia(nuovoMedia)) {
+
+                // Richiama il controller. Ora restituisce TRUE se salva, FALSE se è un clone
+                boolean salvataggioRiuscito = facade.aggiungiNuovoMedia(nuovoMedia);
+
+                if (salvataggioRiuscito) {
                     aggiornaDatiTabella();
+                } else {
+                    // Crea l'Alert grafico di Errore
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Errore di Salvataggio");
+                    alert.setHeaderText("Contenuto Duplicato!");
+                    alert.setContentText("Il film '" + nuovoMedia.getTitolo() + "' di '" + nuovoMedia.getRegista() + "' è già presente nel database.");
+                    alert.showAndWait();
                 }
             });
         });
